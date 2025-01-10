@@ -68,7 +68,7 @@ async function sendMessage() {
 }
 
 function displayMessage(message) {
-    console.log(message);
+    // console.log(message);
     const messagesDiv = document.getElementById('messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message message-bot';
