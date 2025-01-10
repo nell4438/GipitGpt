@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Chat Interface</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-php.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="./css/myStyles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="chat-container">
+        <div class="chat-header">
+            <div class="theme-toggle">
+                <button id="theme-toggle-btn" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+            <h5>GiPit GPT</h5>
+            <h3>meta-llama/Llama-3.3-70B-Instruct</h3>
+        </div>
+        <div id="messages">
+            <div class="message message-bot">
+                Welcome! I'm your AI coding assistant. How can I help you today?
+            </div>
+            <div id="typing-indicator" class="typing-indicator" style="display: none;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <textarea id="user-input" rows="2" placeholder="Type your message..."></textarea>
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+
+    </div>
+
+    <script src="./js/prism-core.min.js"></script>
+    <script src="./js/prism-autoloader.min.js"></script>
+    <script src="./js/prism-toolbar.min.js"></script>
+    <script src="./js/prism-copy-to-clipboard.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <script src="./js/myScript.js"></script>
+</body>
+
+</html>
