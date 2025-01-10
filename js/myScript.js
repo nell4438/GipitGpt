@@ -23,7 +23,7 @@ async function sendMessage() {
     userMessageDiv.innerHTML = formattedUserInput;
 
     typingIndicator.remove();
- 
+
     messagesDiv.appendChild(userMessageDiv);
 
 
@@ -68,34 +68,78 @@ async function sendMessage() {
 }
 
 function displayMessage(message) {
+    console.log(message);
     const messagesDiv = document.getElementById('messages');
-    const typingIndicator = document.getElementById('typing-indicator');
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message message-bot';
 
-
-    let formattedMessage = message.replace(/```(\w+)\n([\s\S]*?)```/g, (match, language, code) => {
+    // handle code blocks with \n at start and end
+    let formattedMessage = message.replace(/```\\n([\s\S]*?)\\n```/g, (match, code) => {
         const escapedCode = code
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
-        return `<pre class="code-block language-${language}"><code class="language-${language}">${escapedCode}</code></pre>`;
+        return `<pre class="code-block language-plaintext"><code class="language-plaintext">${escapedCode}</code></pre>`;
     });
 
-    formattedMessage = formattedMessage.replace(/^#{1,6}\s+(.+)$/gm, (match, text) => {
-        const level = match.match(/#/g).length;
-        return `<h${level}>${text}</h${level}>`;
+    // handle normal code blocks with language specification
+    formattedMessage = formattedMessage.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+        const escapedCode = code
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        return `<pre class="code-block language-${language || 'plaintext'}"><code class="language-${language || 'plaintext'}">${escapedCode}</code></pre>`;
     });
 
-    formattedMessage = formattedMessage.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
-    formattedMessage = formattedMessage.replace(/^- \*\*([^\*]+)\*\*\n/gm, '<ul><li><strong>$1</strong></li></ul>');
-    formattedMessage = formattedMessage.replace(/^- ([^\n]+)/gm, '<ul><li>$1</li></ul>');
+    // Split the message into lines
+    let lines = formattedMessage.split('\n');
+    let inList = false;
+    let formattedLines = lines.map(line => {
+        // Handle headers
+        if (line.match(/^#{1,6}\s/)) {
+            const level = line.match(/^#{1,6}/)[0].length;
+            const text = line.replace(/^#{1,6}\s+/, '');
+            return `<h${level}>${text}</h${level}>`;
+        }
+
+        // Handle bold text
+        line = line.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
+
+        // Handle bullet points
+        if (line.match(/^- /)) {
+            if (!inList) {
+                inList = true;
+                return '<ul><li>' + line.substring(2) + '</li>';
+            }
+            return '<li>' + line.substring(2) + '</li>';
+        } else if (inList) {
+            inList = false;
+            return '</ul>' + line;
+        }
+
+        return line;
+    });
+
+    if (inList) {
+        formattedLines.push('</ul>');
+    }
+
+    // Join lines back together with proper spacing
+    formattedMessage = formattedLines.join('<br>');
+
+    // Add paragraph tags for better spacing
+    formattedMessage = '<p>' + formattedMessage + '</p>';
+
+    // Clean up empty paragraphs and multiple breaks
+    formattedMessage = formattedMessage
+        .replace(/<p>\s*<\/p>/g, '')
+        .replace(/<p><br><\/p>/g, '<br>')
+        .replace(/<br>\s*<br>/g, '<br>');
 
     messageDiv.innerHTML = formattedMessage;
-
-
     messagesDiv.appendChild(messageDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
     Prism.highlightAll();
 }
 
